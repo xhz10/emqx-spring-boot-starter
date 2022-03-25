@@ -1,0 +1,12 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xhz.emqxspringbootstarter.callback.MqttSendCallBack,\
+  com.xhz.emqxspringbootstarter.callback.MqttAcceptCallback,\
+  com.xhz.emqxspringbootstarter.config.executorconf.ExecutorConfig,\
+  com.xhz.emqxspringbootstarter.service.async.impl.AsyncServiceImpl,\
+  com.xhz.emqxspringbootstarter.service.handler.impl.SuperPubService,\
+  com.xhz.emqxspringbootstarter.service.handler.impl.PubServiceEasy,\
+  com.xhz.emqxspringbootstarter.strategy.StrategyMap,\
+  com.xhz.emqxspringbootstarter.strategy.SuperSubEventStrategy,\
+  com.xhz.emqxspringbootstarter.callback.CallBackTopicContext,\
+  com.xhz.emqxspringbootstarter.config.MqttAutoConfiguration,\
+  com.xhz.emqxspringbootstarter.service.context.EventHandlerContext
