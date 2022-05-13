@@ -17,9 +17,9 @@ emqx:
     client-id: id
     cleanSession: true
     reconnect: true
-    timeout: 100
-    keepAlive: 100
-    defaultTopic: testtopic
+    timeout: 自定义
+    keepAlive: 自定义
+    defaultTopic: 自定义
     isOpen: true # 必须是true
     qos: 1
     topics: # 关注的topic有哪些
@@ -101,9 +101,9 @@ emqx:
     client-id: equipment_main
     cleanSession: true
     reconnect: true
-    timeout: 100
-    keepAlive: 100
-    defaultTopic: testtopic
+    timeout: 自定义
+    keepAlive: 自定义
+    defaultTopic: 自定义
     isOpen: true
     qos: 1
     topics:
