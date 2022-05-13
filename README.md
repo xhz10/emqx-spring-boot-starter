@@ -143,40 +143,40 @@ emqx:
 
 ### 2.2 配置类实现
 
-
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%883.58.18.png)
 观察这个包可以看到有四个模块，其中condition分别是启动条件和开启**异步**后的线程池配置，而properties主要用于配置文件配置项的设置其中配置内容自行看代码，而MqttAutoConfiguration类则是分别初始化发送和接收的客户端2.4可查看
 
 ### 2.3 model模块
 
-![image-20220513162003980](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513162003980.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.19.46.png)
 
 主要分为三个部分，topic主题， message内容，type 自定义类型
 
 ### 2.4 client客户端模块
 
-![image-20220513162244598](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513162244598.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.22.28.png)
 
 该模块主要负责发送端和接受端的客户端内容定义
 
 #### 2.4.1 发送端客户端
 
-![image-20220513162607426](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513162607426.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.25.52.png)
 
 核心方法，即publish内容到消息服务器中
 
 #### 2.4.2 接收端客户端
 
-![image-20220513162810167](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513162810167.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.27.58.png)
 
 相信可以看出来，这个类目前没啥用，接收功能我封装成另一种方式了（后续会介绍），这个类主要作用在于设置接收端的回调类以及配置topic，如下图可以看到
 
-![image-20220513172501857](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513172501857.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%885.24.54.png)
 
 ### 2.5 发送模块封装
 
 详细类关系如下
 
-![image-20220513163318292](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513163318292.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.32.45.png)
 
 通过分析类图可以发现，最上层接口为EventServiceHandler 它规范了两种发送方式，即**带返回值Future的发送**与**不带返回值Future的发送**（Future我也了解的不深，可能这块代码写的会不好）
 
@@ -186,7 +186,7 @@ PubServiceEasy作为SuperPubService的继承者，针对发送方式做了最后
 
 最后说到EventHandlerContext，上述所有类的介绍都是发送功能的实现相关，而该类作为一个使用者，聚合了上述功能，从一个使用者的角度去设计源代码也很好理解，都是调用Pub的
 
-![image-20220513164601271](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513164601271.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%884.45.38.png)
 
 但是虽然目前它存在的意义不大，那如果换个角度思考，**数据的内容审核，安全检查，数据校验**是不是都可以在这个类里面去做，所以这个类也可以理解成一个扩展功能，扩展内容可以随着以后看心情去加。
 
@@ -196,7 +196,7 @@ PubServiceEasy作为SuperPubService的继承者，针对发送方式做了最后
 
 具体类关系如下
 
-![image-20220513171133471](/Users/xuhongzhuo/Library/Application Support/typora-user-images/image-20220513171133471.png)
+![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%885.11.16.png)
 
 首先我们来分析这个类图，**从上到下分别是一层一层的聚合关系**，当然最开始我们定义了一个**事件策略规范**，即EventStrategy，SuperSubEventStrategy则是作为TestSub的父类存在，TestSub是什么？在第一章的实现过程我们看到doHandlerEvent的内容是当topic的信息接收到后我们做的事情，而这个做事的方法就是继承自SuperSubEventStrategy。所以我们再观察StrategyMap这个类，我们看到了它聚合了SuperSubEventStrategy，由此根据策略模式我们可以分析出，StrategyMap作为策略的存储容器，**返回的策略都是SuperSubEventStrategy（所有具体策略的父类）**，而StrategyMap可以作为所有的策略的策略工厂来理解，**策略工厂产生策略**，看上去非常合理，那么工厂是如何实现的呢？通过聚合关系我们发现StrategyMap中聚合了一个ApplicationContext类。这是Spring中的bean工厂，我利用StrategyMap的init方法，在**它初始化的时候从配置文件中读出topic对应的实现类，并且写入了IOC容器**，这样策略工厂就构建完毕了。
 
