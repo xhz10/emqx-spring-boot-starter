@@ -1,9 +1,8 @@
 package com.xhz.emqxspringbootstarter.callback;
 
 
-
-
 import com.xhz.emqxspringbootstarter.client.MqttAcceptClient;
+import com.xhz.emqxspringbootstarter.config.properties.EmqxBasicProperties;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -35,7 +34,7 @@ public class MqttAcceptCallback implements MqttCallbackExtended {
      */
     @Override
     public void connectionLost(Throwable throwable) {
-        logger.info("连接断开，可以做重连");
+        logger.error("连接终端，可以重连", throwable);
     }
 
     /**
