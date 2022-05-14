@@ -200,7 +200,7 @@ PubServiceEasy作为SuperPubService的继承者，针对发送方式做了最后
 
 ![输入图片说明](img/%E6%88%AA%E5%B1%8F2022-05-13%20%E4%B8%8B%E5%8D%885.11.16.png)
 
-首先我们来分析这个类图，**从上到下分别是一层一层的聚合关系**，当然最开始我们定义了一个**事件策略规范**，即EventStrategy，SuperSubEventStrategy则是作为TestSub的父类存在，TestSub是什么？在第一章的实现过程我们看到doHandlerEvent的内容是当topic的信息接收到后我们做的事情，而这个做事的方法就是继承自SuperSubEventStrategy。所以我们再观察StrategyMap这个类，我们看到了它聚合了SuperSubEventStrategy，由此根据策略模式我们可以分析出，StrategyMap作为策略的存储容器，**返回的策略都是SuperSubEventStrategy（所有具体策略的父类）**，而StrategyMap可以作为所有的策略的策略工厂来理解，**策略工厂产生策略**，看上去非常合理，那么工厂是如何实现的呢？通过聚合关系我们发现StrategyMap中聚合了一个ApplicationContext类。这是Spring中的bean工厂，我利用StrategyMap的init方法，在**它初始化的时候从配置文件中读出topic对应的实现类，并且写入了IOC容器**，这样策略工厂就构建完毕了。
+首先我们来分析这个类图，**从上到下分别是一层一层的聚合关系**，当然最开始我们定义了一个**事件策略规范**，即EventStrategy，SuperSubEventStrategy则是作为TestSub的父类存在，TestSub是什么？在第一章的实现过程我们看到doHandlerEvent的内容是当topic的信息接收到后我们做的事情，而这个做事的方法就是继承自SuperSubEventStrategy。所以我们再观察StrategyMap这个类，我们看到了它聚合了SuperSubEventStrategy，由此根据策略模式我们可以分析出，StrategyMap作为策略的存储容器，**返回的策略都是SuperSubEventStrategy（所有具体策略的父类）**，而StrategyMap可以作为所有的策略的策略工厂来理解，**策略工厂产生策略**，看上去非常合理，那么工厂是如何实现的呢？通过聚合关系我们发现StrategyMap中聚合了一个ApplicationContext类。这是Spring中的bean工厂，我利用StrategyMap的**init**方法，在**它初始化的时候从配置文件中读出topic对应的实现类，并且写入了IOC容器**，这样策略工厂就构建完毕了。
 
 我们继续看聚合关系，往下看会发现CallBackTopicContext聚合了策略工厂StrategyMap，，其中有一个execute方法，我们不难猜测这个方法的功能就是根据**入参从工厂中取出策略并且执行策略的doHandlerEvent**。
 
